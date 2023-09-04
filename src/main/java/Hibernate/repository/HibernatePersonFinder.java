@@ -4,12 +4,11 @@ import Hibernate.model.Person;
 import Hibernate.model.PersonPK;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Repository
 public class HibernatePersonFinder implements PersonFinder {
@@ -20,22 +19,15 @@ public class HibernatePersonFinder implements PersonFinder {
     @Override
     @Transactional
     public List<Person> getPersonsByCity(String city) {
-        List<Person> personList = new ArrayList<>();
-        //feelTheTable();
-        String sql = "select* from public.person";
-        List<Object[]> rows = entityManager.createNativeQuery(sql).getResultList();
 
+//        //feelTheTable();
 
-        for (Object[] row : rows) {
-            PersonPK personPK = new PersonPK((String) row[1], (String) row[2], (Integer) row[0]);
-            Person person = new Person(personPK, (String) row[4], (String) row[3]);
-            personList.add(person);
-        }
+        String hql = "FROM Person where city = :city_of_living";
+        Query s = entityManager.createQuery(hql);
+        s.setParameter("city_of_living", city);
+        List<Person> personsList = s.getResultList();
 
-        List<Person> persons = personList.stream()
-                .filter(person -> Objects.equals(person.getCity(), city)).toList();
-
-        return persons;
+        return personsList;
     }
 
     @Transactional
