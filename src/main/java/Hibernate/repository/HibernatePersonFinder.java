@@ -20,11 +20,16 @@ public class HibernatePersonFinder implements PersonFinder {
     @Transactional
     public List<Person> getPersonsByCity(String city) {
 
-//        //feelTheTable();
+        //feelTheTable();
 
-        String hql = "FROM Person where city = :city_of_living";
+        String hql = "FROM Person where city = " + "'" + city + "'";//:city_of_living";
+        /**
+        Прошу прощения, но я не совсем понял момент доработки: что в предыдущем варианте идет поиск по столбцу city. Если я правильно понял по документации
+         HQL запрос привязывается к полю city класса Person.
+         Буду благодарен за пояснение :-)
+         */
         Query s = entityManager.createQuery(hql);
-        s.setParameter("city_of_living", city);
+        //s.setParameter("city_of_living", city);
         List<Person> personsList = s.getResultList();
 
         return personsList;
